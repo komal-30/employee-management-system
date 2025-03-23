@@ -252,12 +252,6 @@ class TaskManagementGUI {
 		}
 	}
 
-	private void addTask(java.awt.event.ActionEvent evt, String employeeId, Task task) throws SQLException {
-		employeeService.addTaskToEmployee(employeeId, task);
-		employeeService.logTaskAction("Added", task.title());
-		loadTasks();
-	}
-
 	private void deleteTask(java.awt.event.ActionEvent evt, String taskTitle, String taskDesc) {
 		employeeService.removeTaskFromEmployee(taskTitle, taskDesc);
 		employeeService.logTaskAction("Deleted", "Task Desc: " + taskDesc);

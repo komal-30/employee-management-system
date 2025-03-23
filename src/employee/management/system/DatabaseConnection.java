@@ -7,8 +7,8 @@ import java.sql.Statement;
 
 public class DatabaseConnection {
 	private static final String URL = "jdbc:mysql://127.0.0.1:3306/employee_management?useSSL=false&serverTimezone=UTC";
-    private static final String USER = "root";  // Change to your MySQL username
-    private static final String PASSWORD = "Komal@325740";  // Change to your MySQL password
+    private static final String USER = "root";  //Change to username here
+    private static final String PASSWORD = "password";  // Change to your MySQL password here
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);

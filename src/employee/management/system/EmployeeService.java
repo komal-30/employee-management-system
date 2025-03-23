@@ -34,8 +34,6 @@ public class EmployeeService {
 	private Locale currentLocale = Locale.ENGLISH; // Default locale
 	private ResourceBundle messages = ResourceBundle.getBundle("MessagesBundle", currentLocale);
 
-	
-	
 	public void setLocale(Locale locale) {
 		this.currentLocale = locale;
 		this.messages = ResourceBundle.getBundle("MessagesBundle", currentLocale);
@@ -185,7 +183,6 @@ public class EmployeeService {
 		}
 	}
 
-	
 	public void removeTaskFromEmployee(String taskTitle, String taskDesc) {
 		try (Connection conn = DatabaseConnection.getConnection();
 				PreparedStatement stmt = conn
@@ -199,42 +196,41 @@ public class EmployeeService {
 	}
 
 	public void logTaskAction(String action, String taskTitle) {
-        String logEntry = String.format("%s: %s%n", action, taskTitle);
-        try {
-            Files.write(LOG_FILE, logEntry.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-	
-	public String classifyTaskPriority(Task task) {
-	    return switch (task.priority()) {
-	        case 1, 2 -> "Low Priority";
-	        case 3 -> "Medium Priority";
-	        case 4, 5 -> "High Priority";
-	        default -> "Unknown Priority";
-	    };
+		String logEntry = String.format("%s: %s%n", action, taskTitle);
+		try {
+			Files.write(LOG_FILE, logEntry.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE,
+					StandardOpenOption.APPEND);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
+	public String classifyTaskPriority(Task task) {
+		return switch (task.priority()) {
+		case 1, 2 -> "Low Priority";
+		case 3 -> "Medium Priority";
+		case 4, 5 -> "High Priority";
+		default -> "Unknown Priority";
+		};
+	}
+
 	public void filterPendingTasks(String employeeId) {
-        taskListModel.clear();
-        Employee employee = getEmployeeById(employeeId);
-        if (employee != null) {
-            List<Task> pendingTasks = employee.tasks().stream()
-                .filter(Predicate.not(Task::completed))
-                .sorted(Comparator.comparing(Task::priority))
-                .collect(Collectors.toList());
-            
-            for (Task task : pendingTasks) {
-                String taskDetails = String.format("<html><b>%s</b><br>%s: %s<br>%s: %s<br>%s: %d<br>%s: %s</html>", 
-                        task.title(), messages.getString("description"), task.description(), 
-                        messages.getString("deadline"), task.deadline().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), 
-                        messages.getString("priority"), task.priority(), 
-                        messages.getString("status"), messages.getString("pending"));
-                taskListModel.addElement(taskDetails);
-            }
-        }
-    }
+		taskListModel.clear();
+		Employee employee = getEmployeeById(employeeId);
+		if (employee != null) {
+			List<Task> pendingTasks = employee.tasks().stream().filter(Predicate.not(Task::completed))
+					.sorted(Comparator.comparing(Task::priority)).collect(Collectors.toList());
+
+			for (Task task : pendingTasks) {
+				String taskDetails = String.format("<html><b>%s</b><br>%s: %s<br>%s: %s<br>%s: %d<br>%s: %s</html>",
+						task.title(), messages.getString("description"), task.description(),
+						messages.getString("deadline"),
+						task.deadline().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+						messages.getString("priority"), task.priority(), messages.getString("status"),
+						messages.getString("pending"));
+				taskListModel.addElement(taskDetails);
+			}
+		}
+	}
 
 }
